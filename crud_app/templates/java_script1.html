@@ -1,0 +1,41 @@
+<script type="text/javascript">
+
+$('#btnsave').click(function () {
+	let nm = $('#nameid').val();
+	let em = $('#emailid').val();
+	let ds = $('#descriptionid').val();
+	let csr = $("input[name=csrfmiddlewaretoken]").val();
+
+	output = ""
+
+	if(nm == ''){
+		console.log('plz enter name...')	
+	} else if (em == ''){
+		console.log('enter email...')
+	} else if (ds == ''){
+		console.log('enter descriptions...')
+	} else {
+		mydata = {name_1:nm, email_1:em, description_1:ds, csrfmiddlewaretoken:csr};
+		$.ajax({
+			url: "{% url 'save' %}",
+			method: "POST",
+			data: mydata,
+			dataType: "json",
+			success: function(data){
+				x = data.crud_data;
+				if(data.status == "Save"){
+					console.log('form submited...')
+					// console.log(data.crud_data)
+
+					for(i=0; i<x.length; i++){
+						output += "<tr><td>" + x[i].id + "</td><td>" + x[i].name + "</td><td>" + x[i].email + "</td><td>" + x[i].description + "</td><td> <input type='button' class='btn btn-warning btn-sm' value='Edit' data-sid="+ x[i].id + "/> <input type='button' class='btn btn-danger btn-sm' value='Delete' data-sid="+ x[i].id + "/>";
+					}
+					$("#tbody").html(output);
+					$("form")[0].reset();
+				}
+			},
+		});
+	}
+});
+
+</script>
