@@ -2,6 +2,7 @@
 
 $('#btnsave').click(function () {
 	let nm = $('#nameid').val();
+	let sid = $('#stuid').val();
 	let em = $('#emailid').val();
 	let ds = $('#descriptionid').val();
 	let csr = $("input[name=csrfmiddlewaretoken]").val();
@@ -15,7 +16,7 @@ $('#btnsave').click(function () {
 	} else if (ds == ''){
 		console.log('enter descriptions...')
 	} else {
-		mydata = {name_1:nm, email_1:em, description_1:ds, csrfmiddlewaretoken:csr};
+		mydata = {stuid:sid, name_1:nm, email_1:em, description_1:ds, csrfmiddlewaretoken:csr};
 		$.ajax({
 			url: "{% url 'save' %}",
 			method: "POST",
@@ -28,14 +29,75 @@ $('#btnsave').click(function () {
 					// console.log(data.crud_data)
 
 					for(i=0; i<x.length; i++){
-						output += "<tr><td>" + x[i].id + "</td><td>" + x[i].name + "</td><td>" + x[i].email + "</td><td>" + x[i].description + "</td><td> <input type='button' class='btn btn-warning btn-sm' value='Edit' data-sid="+ x[i].id + "/> <input type='button' class='btn btn-danger btn-sm' value='Delete' data-sid="+ x[i].id + "/>";
+						output += "<tr><td>" + x[i].id + "</td><td>" + x[i].name + "</td><td>" + x[i].email + "</td><td>" + x[i].description + "</td><td> <input type='button' class='btn btn-warning btn-sm btn-edit' value='Edit' data-sid="+ x[i].id + "> <input type='button' class='btn btn-danger btn-sm btn-del' value='Delete' data-sid="+ x[i].id + ">";
 					}
 					$("#tbody").html(output);
+					$("#stuid").val("");
+					$("form")[0].reset();
+				}
+				if (data.status == 0){
+					console.log('something wrong...')
+					$("#stuid").val("");
 					$("form")[0].reset();
 				}
 			},
 		});
 	}
 });
+
+
+// Delete Data
+
+$("tbody").on("click", ".btn-del", function(){
+	console.log("delete clicked")
+	let id = $(this).attr("data-sid");
+	let csr = $("input[name=csrfmiddlewaretoken]").val();
+
+	console.log(id)
+
+	mydata_del = {sid:id, csrfmiddlewaretoken:csr}
+	mythis = this;
+	$.ajax({
+		url: "{% url 'delete' %}",
+		method: "POST",
+		data: mydata_del,
+		success: function(data){
+			// console.log(data)
+			if (data.status == 1){
+				$(mythis).closest("tr").fadeOut();
+			}
+			if (data.status == 0){
+				console.log('something wrong...')
+			}
+		}
+	});
+});
+
+
+// edit data
+$("tbody").on("click", ".btn-edit", function(){
+	let id = $(this).attr("data-sid");
+	console.log(id)
+	let csr = $("input[name=csrfmiddlewaretoken]").val();
+
+	mydata_del = {sid: id, csrfmiddlewaretoken: csr};
+
+	$.ajax({
+		url: "{% url 'edit' %}",
+		method: "POST",
+		data: mydata_del,
+		dataType: "json",
+		success: function(data){
+			// console.log(data)
+			$('#stuid').val(data.id);
+			$('#nameid').val(data.name);
+			$('#emailid').val(data.email);
+			$('#descriptionid').val(data.description);
+		}
+	});
+
+});
+
+
 
 </script>

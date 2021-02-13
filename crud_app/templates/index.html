@@ -26,6 +26,7 @@
         <h4 class="text-center alert alert-info">Add/Update</h4>
         <form method="post">
           {% csrf_token %}
+          <input type="hidden" id="stuid" name="stuid">
           {{form|crispy}}
           <br>
           <input type="button" id="btnsave" value="Submit" class="btn btn-primary">
@@ -50,8 +51,8 @@
               <td>{{data.email}}</td>
               <td>{{data.description|slice:"0:20"}}</td>
               <td>
-                <input type="button" data-sid="{{data.id}}" class="btn btn-warning btn-sm" value="Edit">
-                <input type="button" data-sid="{{data.id}}" class="btn btn-danger btn-sm" value="Delete">
+                <input type="button" data-sid="{{data.id}}" class="btn btn-warning btn-sm btn-edit" value="Edit">
+                <input type="button" data-sid="{{data.id}}" class="btn btn-danger btn-sm btn-del" value="Delete">
               </td>
 
             </tr>
