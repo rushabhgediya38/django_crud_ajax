@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, PostForm
 from django.http import JsonResponse, HttpResponse
-from .models import crud_post
+from .models import crud_post, Post
 
 
 # Create your views here.
@@ -52,4 +52,18 @@ def data_edit(request):
 		return JsonResponse(ed_data)
 
 
+def ajax_post(request):
+	form = PostForm(request.POST or None, request.FILES or None)
+	if request.method == 'POST' or request.FILES:
+		resp = {}
+		if form.is_valid():
+			form.save()
+			print("yes form is valid")
+			resp['success'] = True
+		else:
+			resp['success'] = False
+			resp['html'] = form.errors
+		
+		return JsonResponse(resp)
 
+	return render(request, 'ajax_post.html', {'form':form})

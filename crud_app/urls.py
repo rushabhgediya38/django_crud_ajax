@@ -6,5 +6,6 @@ urlpatterns = [
     path('save/', save, name='save'),
     path('delete/', data_delete, name='delete'),
     path('edit/', data_edit, name='edit'),
+    path('ajax_post/', ajax_post, name='ajax_post'),
 ]
 
