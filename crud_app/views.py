@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .forms import UserRegistrationForm, PostForm
 from django.http import JsonResponse, HttpResponse
-from .models import crud_post, Post
+from .models import crud_post, Post, mutiple
 
 
 # Create your views here.
@@ -67,3 +67,25 @@ def ajax_post(request):
 		return JsonResponse(resp)
 
 	return render(request, 'ajax_post.html', {'form':form})
+
+
+# create multiple post functionality
+def create_post_view(request):
+	if request.method == 'POST' or request.FILES:
+		length = request.POST.get('length')
+		name = request.POST.get('name')
+		email = request.POST.get('email')
+
+		post = Post.objects.create(
+			name=name,
+			email=email
+		)
+
+		for file_num in range(0, int(length)):
+			mutiple.objects.create(
+			post=post,
+			img=request.FILES.get(f'images{file_num}')
+			)
+
+
+	return render(request, 'create-post.html')

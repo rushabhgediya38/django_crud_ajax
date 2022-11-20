@@ -21,3 +21,13 @@ class Post(models.Model):
     def __str__(self):
         return self.name
 
+
+
+class mutiple(models.Model):
+    post = models.ForeignKey(to=Post, on_delete=models.CASCADE, blank=True, null=True)
+    img = models.FileField(upload_to='multiple/')
+
+    def __str__(self):
+        return str(self.pk)
+
+

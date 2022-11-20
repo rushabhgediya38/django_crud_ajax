@@ -1,5 +1,7 @@
 .idea/
 *.pyc
 media/
+multiple/
+image/
 .env.local
 logs
